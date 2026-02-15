@@ -14,7 +14,7 @@ export default function Footer() {
           <Instagram className="size-4" />
           <Youtube className="size-4" />
           <X className="size-4" />
-          <Link href={"/login"}>
+          <Link href={"/dashboard"}>
             <AppWindowMac className="size-4" />
           </Link>
         </div>

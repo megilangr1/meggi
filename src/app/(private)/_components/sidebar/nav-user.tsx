@@ -16,13 +16,11 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import LogoutButton from "./logout-button";
+import { useSession } from "@/lib/core/auth/auth-client";
 
 export function NavUser() {
-  const user = {
-    name: "MeGGi",
-    email: "meggi@mail.com",
-  };
+  const { data: session } = useSession();
 
   return (
     <SidebarMenu>
@@ -34,15 +32,18 @@ export function NavUser() {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg grayscale border-2 border-slate-400">
-                <AvatarImage src={"/images/logo.png"} alt={user?.name ?? "-"} />
+                <AvatarImage
+                  src={"/images/logo.png"}
+                  alt={session?.user.name ?? "-"}
+                />
                 <AvatarFallback className="rounded-lg">CH</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">
-                  {user?.name ?? "-"}
+                  {session?.user.name ?? "-"}
                 </span>
                 <span className="truncate text-xs text-muted-foreground">
-                  {user?.email ?? "-"}
+                  {session?.user.email ?? "-"}
                 </span>
               </div>
               <MoreVerticalIcon className="ml-auto size-4" />
@@ -58,16 +59,16 @@ export function NavUser() {
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage
                     src={"/images/logo.png"}
-                    alt={user?.name ?? "-"}
+                    alt={session?.user.name ?? "-"}
                   />
                   <AvatarFallback className="rounded-lg">CH</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">
-                    {user?.name ?? "-"}
+                    {session?.user.name ?? "-"}
                   </span>
                   <span className="truncate text-xs text-muted-foreground">
-                    {user?.email ?? "-"}
+                    {session?.user.email ?? "-"}
                   </span>
                 </div>
               </div>
@@ -84,9 +85,7 @@ export function NavUser() {
 
             <DropdownMenuItem asChild>
               <div className="w-full">
-                <Link href={"/"} className="w-full">
-                  <Button className="w-full">Logout</Button>
-                </Link>
+                <LogoutButton className="items-center" />
               </div>
             </DropdownMenuItem>
           </DropdownMenuContent>
