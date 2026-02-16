@@ -9,7 +9,7 @@ export const auth = betterAuth({
   }),
   emailAndPassword: {
     enabled: true,
-    // disableSignUp: true,
+    autoSignIn: false,
   },
   plugins: [nextCookies()],
 });
