@@ -31,19 +31,46 @@ const users: SeedUser[] = [
 
 export async function seedUser() {
   for (const user of users) {
+    const roles = await db.role.findMany({
+      where: {
+        name: { in: user.roles },
+      },
+    });
+
+    if (roles.length !== user.roles.length) {
+      throw new Error(`Terdapat Roles User Yang Tidak Ada !`);
+    }
+
+    let userId;
+
     const check = await db.user.findUnique({
       where: { email: user.email },
     });
 
     if (!check) {
-      await auth.api.signUpEmail({
+      const created = await auth.api.signUpEmail({
         body: {
           name: user.name,
           email: user.email,
           password: user.password,
         },
       });
+
+      userId = created.user.id;
+    } else {
+      userId = check.id;
     }
+
+    await db.userRole.deleteMany({
+      where: { userId: userId },
+    });
+
+    await db.userRole.createMany({
+      data: roles.map((r) => ({
+        roleId: r.id,
+        userId: userId,
+      })),
+    });
   }
 
   console.log("USER SEEDER COMPLETE !");

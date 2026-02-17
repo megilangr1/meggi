@@ -1,7 +1,35 @@
+import {
+  customSessionClient,
+  inferAdditionalFields,
+} from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
+import { auth } from "./auth";
+import { BetterAuthOptions } from "better-auth";
+import { customSession } from "better-auth/plugins";
+
+const options = {
+  //...config options
+
+  plugins: [
+    inferAdditionalFields<typeof auth>(),
+    customSessionClient<typeof auth>(),
+  ],
+} satisfies BetterAuthOptions;
 
 export const { signIn, signUp, signOut, useSession, ...authClient } =
-  createAuthClient();
+  createAuthClient({
+    ...options,
+    plugins: [
+      ...(options.plugins ?? []),
+      customSession(async ({ user, session }) => {
+        // now both user and session will infer the fields added by plugins and your custom fields
+        return {
+          user,
+          session,
+        };
+      }, options), // pass options here
+    ],
+  });
 
 type ErrorTypes = Partial<
   Record<

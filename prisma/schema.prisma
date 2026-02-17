@@ -8,18 +8,19 @@ datasource db {
 }
 
 model User {
-  id            String    @id
-  name          String    @db.Text
+  id            String     @id
+  name          String     @db.Text
   email         String
-  emailVerified Boolean   @default(false)
-  image         String?   @db.Text
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  emailVerified Boolean    @default(false)
+  image         String?    @db.Text
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
   sessions      Session[]
   accounts      Account[]
+  userRoles     UserRole[]
 
   @@unique([email])
-  @@map("user")
+  @@map("users")
 }
 
 model Session {
@@ -34,8 +35,8 @@ model Session {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([token])
-  @@index([userId(length: 191)])
-  @@map("session")
+  @@index([userId])
+  @@map("sessions")
 }
 
 model Account {
@@ -54,8 +55,8 @@ model Account {
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
 
-  @@index([userId(length: 191)])
-  @@map("account")
+  @@index([userId])
+  @@map("accounts")
 }
 
 model Verification {
@@ -67,5 +68,29 @@ model Verification {
   updatedAt  DateTime @updatedAt
 
   @@index([identifier(length: 191)])
-  @@map("verification")
+  @@map("verifications")
+}
+
+model Role {
+  id    Int     @id @default(autoincrement())
+  name  String  @unique
+  label String?
+
+  users UserRole[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("roles")
+}
+
+model UserRole {
+  userId String
+  roleId Int
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+  @@map("user_roles")
 }

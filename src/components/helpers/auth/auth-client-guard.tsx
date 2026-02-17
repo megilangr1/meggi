@@ -2,8 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import LoadingScreen from "../main/loading/loading-screen";
 import { useSession } from "@/lib/core/auth/auth-client";
+import LoadingScreen from "../loading/loading-screen";
 
 const AuthClientGuard = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();

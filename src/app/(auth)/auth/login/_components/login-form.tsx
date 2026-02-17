@@ -25,7 +25,7 @@ const defaultValues: AuthLoginForm = {
   password: "admin123",
 };
 
-const AuthForm = () => {
+const LoginForm = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -151,4 +151,4 @@ const AuthForm = () => {
   );
 };
 
-export default AuthForm;
+export default LoginForm;

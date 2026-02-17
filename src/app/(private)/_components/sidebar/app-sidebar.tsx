@@ -12,6 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Captions, Hash, Home, LucideIcon, PanelsTopLeft } from "lucide-react";
 import { NavMain } from "./nav-main";
 import { NavUser } from "./nav-user";
+import UserRoleCheck from "@/components/helpers/auth/user-role-check";
 
 export interface NavList {
   title: string;
@@ -49,7 +50,7 @@ const navAdmin: NavList[] = [
   },
 ];
 
-const navUser: NavList[] = [
+const navOp: NavList[] = [
   {
     title: "Belum Ada",
     url: "#",
@@ -98,10 +99,18 @@ export function AppSidebar() {
       </SidebarHeader>
       <hr className="w-full border-t-2" />
       <SidebarContent className="gap-0">
-        <NavMain items={navMain} title="Navigasi Utama" />
-        <NavMain items={navAdmin} title="Navigasi Admin" />
-        <NavMain items={navUser} title="Navigasi Operator" />
-        <NavMain items={navOther} title="Navigasi Lainnya" />
+        <UserRoleCheck allowedRoles={[]}>
+          <NavMain items={navMain} title="Navigasi Utama" />
+        </UserRoleCheck>
+        <UserRoleCheck allowedRoles={["ADMIN"]}>
+          <NavMain items={navAdmin} title="Navigasi Admin" />
+        </UserRoleCheck>
+        <UserRoleCheck allowedRoles={["ADMIN", "OP"]}>
+          <NavMain items={navOp} title="Navigasi Operator" />
+        </UserRoleCheck>
+        <UserRoleCheck allowedRoles={[]}>
+          <NavMain items={navOther} title="Navigasi Lainnya" />
+        </UserRoleCheck>
       </SidebarContent>
       <SidebarFooter>
         <NavUser />

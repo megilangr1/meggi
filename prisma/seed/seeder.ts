@@ -1,6 +1,7 @@
 import "dotenv/config";
 import { PrismaClient } from "@/generated/prisma/client";
 import { PrismaMariaDb } from "@prisma/adapter-mariadb";
+import { seedRole } from "./master/roles.seed";
 import { seedUser } from "./master/user.seed";
 
 const adapter = new PrismaMariaDb({
@@ -14,6 +15,7 @@ const adapter = new PrismaMariaDb({
 export const db = new PrismaClient({ adapter });
 
 export async function main() {
+  await seedRole();
   await seedUser();
 }
 

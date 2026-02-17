@@ -1,5 +1,5 @@
 -- CreateTable
-CREATE TABLE `user` (
+CREATE TABLE `users` (
     `id` VARCHAR(191) NOT NULL,
     `name` TEXT NOT NULL,
     `email` VARCHAR(191) NOT NULL,
@@ -8,12 +8,12 @@ CREATE TABLE `user` (
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
-    UNIQUE INDEX `user_email_key`(`email`),
+    UNIQUE INDEX `users_email_key`(`email`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `session` (
+CREATE TABLE `sessions` (
     `id` VARCHAR(191) NOT NULL,
     `expiresAt` DATETIME(3) NOT NULL,
     `token` VARCHAR(191) NOT NULL,
@@ -23,13 +23,13 @@ CREATE TABLE `session` (
     `userAgent` TEXT NULL,
     `userId` VARCHAR(191) NOT NULL,
 
-    INDEX `session_userId_idx`(`userId`(191)),
-    UNIQUE INDEX `session_token_key`(`token`),
+    INDEX `sessions_userId_idx`(`userId`),
+    UNIQUE INDEX `sessions_token_key`(`token`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `account` (
+CREATE TABLE `accounts` (
     `id` VARCHAR(191) NOT NULL,
     `accountId` TEXT NOT NULL,
     `providerId` TEXT NOT NULL,
@@ -44,12 +44,12 @@ CREATE TABLE `account` (
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
-    INDEX `account_userId_idx`(`userId`(191)),
+    INDEX `accounts_userId_idx`(`userId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `verification` (
+CREATE TABLE `verifications` (
     `id` VARCHAR(191) NOT NULL,
     `identifier` TEXT NOT NULL,
     `value` TEXT NOT NULL,
@@ -57,12 +57,38 @@ CREATE TABLE `verification` (
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
-    INDEX `verification_identifier_idx`(`identifier`(191)),
+    INDEX `verifications_identifier_idx`(`identifier`(191)),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- AddForeignKey
-ALTER TABLE `session` ADD CONSTRAINT `session_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+-- CreateTable
+CREATE TABLE `roles` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(191) NOT NULL,
+    `label` VARCHAR(191) NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    UNIQUE INDEX `roles_name_key`(`name`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `user_roles` (
+    `userId` VARCHAR(191) NOT NULL,
+    `roleId` INTEGER NOT NULL,
+
+    PRIMARY KEY (`userId`, `roleId`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
-ALTER TABLE `account` ADD CONSTRAINT `account_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `sessions` ADD CONSTRAINT `sessions_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `accounts` ADD CONSTRAINT `accounts_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `user_roles` ADD CONSTRAINT `user_roles_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `user_roles` ADD CONSTRAINT `user_roles_roleId_fkey` FOREIGN KEY (`roleId`) REFERENCES `roles`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
