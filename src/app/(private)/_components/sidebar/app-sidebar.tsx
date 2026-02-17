@@ -44,7 +44,7 @@ const navAdmin: NavList[] = [
     items: [
       {
         title: "Akun Pengguna",
-        url: "/master-data/daftar-pengguna",
+        url: "/master-data/pengguna",
       },
     ],
   },

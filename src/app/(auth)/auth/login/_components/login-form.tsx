@@ -16,7 +16,6 @@ import { AuthLoginForm, AuthLoginSchema } from "@/lib/validations/auth-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RotateCcw } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
@@ -26,7 +25,6 @@ const defaultValues: AuthLoginForm = {
 };
 
 const LoginForm = () => {
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<AuthLoginForm>({
@@ -65,7 +63,7 @@ const LoginForm = () => {
       }
 
       doAlert(2, "Login Berhasil !");
-      router.push("/dashboard");
+      window.location.href = "/dashboard";
       return;
     } catch {
       doAlert(0, "Terjadi Kesalahan ! Silahkan Hubungi Administrator !");

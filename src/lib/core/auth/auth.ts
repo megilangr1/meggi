@@ -30,4 +30,5 @@ export const auth = betterAuth({
 
     nextCookies(),
   ],
+  trustedOrigins: ["http://localhost:3000", "http://192.168.1.6:3000"],
 });
