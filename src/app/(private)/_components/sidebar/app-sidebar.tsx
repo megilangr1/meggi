@@ -64,6 +64,11 @@ const navOther: NavList[] = [
     url: "/",
     icon: PanelsTopLeft,
   },
+  {
+    title: "Dummy Page",
+    url: "/dummy",
+    icon: PanelsTopLeft,
+  },
 ];
 
 export function AppSidebar() {

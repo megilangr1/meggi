@@ -1,6 +1,7 @@
 import { AuthGuard } from "@/lib/core/auth/auth-guard";
 import PageHeader from "../../_components/page-header";
 import { Plus, Sheet } from "lucide-react";
+import DaftarPengguna from "./_components/daftar-pengguna";
 
 export default async function Page() {
   await AuthGuard.pageGuard(["ADMIN"]);
@@ -18,7 +19,7 @@ export default async function Page() {
         }}
       />
 
-      <p>CRUD Pengguna</p>
+      <DaftarPengguna />
     </div>
   );
 }
