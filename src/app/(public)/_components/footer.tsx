@@ -4,7 +4,7 @@ import Link from "next/link";
 export default function Footer() {
   return (
     <footer className="border-t py-6">
-      <div className="mx-auto max-w-5xl px-6 text-sm text-slate-500 flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-4">
+      <div className="mx-auto max-w-6xl px-6 text-sm text-slate-500 flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-4">
         <div className="w-full flex-auto">
           © {new Date().getFullYear()} -{" "}
           {process.env.NEXT_PUBLIC_APP_NAME || "NextJS 16"}

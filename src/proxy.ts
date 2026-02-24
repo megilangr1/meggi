@@ -17,7 +17,7 @@ export async function proxy(request: NextRequest) {
     }
   }
 
-  const protectedPaths = ["/dashboard"];
+  const protectedPaths = ["/dashboard", "/dummy", "/master-data"];
   const isProtected = protectedPaths.some((path) => pathname.startsWith(path));
 
   if (isProtected) {
