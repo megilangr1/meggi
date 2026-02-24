@@ -51,29 +51,31 @@ export async function CreatePengguna({ data }: CreatePenggunaProps) {
       roleId: v.id,
     }));
 
-    const create = await auth.api.signUpEmail({
-      body: {
-        email,
-        name,
-        password,
-      },
-    });
+    const created = await prisma.$transaction(async (tx) => {
+      const create = await auth.api.signUpEmail({
+        body: {
+          email,
+          name,
+          password,
+        },
+      });
 
-    await prisma.userRole.createMany({
-      data: roleConnect.map((r) => ({
-        roleId: r.roleId,
-        userId: create.user.id,
-      })),
+      await tx.userRole.createMany({
+        data: roleConnect.map((r) => ({
+          roleId: r.roleId,
+          userId: create.user.id,
+        })),
+      });
+
+      return create;
     });
 
     revalidatePath("/master-data/pengguna");
-    return res(create.user, "USER201");
+    return res(created.user, "USER201");
   } catch (error: unknown) {
     if (isBetterAuthError(error))
       if (error.statusCode === 422)
         return badReq([cIssue("email", "Email sudah digunakan!")]);
-
-    console.log(JSON.stringify(error));
 
     return err(error);
   }
@@ -126,48 +128,53 @@ export async function UpdatePengguna({ id, data }: UpdatePenggunaProps) {
     }));
 
     // Update
-    const update = await prisma.user.update({
-      where: { id },
-      data: {
-        email: email,
-        name: name,
-      },
-    });
 
-    if (password) {
-      const hashedPassword = await hashPassword(password);
-
-      await prisma.account.update({
-        where: {
-          id: editData.accounts[0].id,
-        },
+    const updated = await prisma.$transaction(async (tx) => {
+      const update = await tx.user.update({
+        where: { id },
         data: {
-          password: hashedPassword,
+          email: email,
+          name: name,
         },
       });
-    }
 
-    await prisma.userRole.deleteMany({
-      where: {
-        userId: id,
-      },
-    });
+      if (password) {
+        const hashedPassword = await hashPassword(password);
 
-    await prisma.userRole.createMany({
-      data: roleConnect.map((r) => ({
-        roleId: r.roleId,
-        userId: id,
-      })),
+        await tx.account.updateMany({
+          where: {
+            id: {
+              in: editData.accounts.map((ac) => ac.id),
+            },
+          },
+          data: {
+            password: hashedPassword,
+          },
+        });
+      }
+
+      await tx.userRole.deleteMany({
+        where: {
+          userId: id,
+        },
+      });
+
+      await tx.userRole.createMany({
+        data: roleConnect.map((r) => ({
+          roleId: r.roleId,
+          userId: id,
+        })),
+      });
+
+      return update;
     });
 
     revalidatePath("/master-data/pengguna");
-    return res(update, "USER203");
+    return res(updated, "USER203");
   } catch (error: unknown) {
     if (isBetterAuthError(error))
       if (error.statusCode === 422)
         return badReq([cIssue("email", "Email sudah digunakan!")]);
-
-    console.log(JSON.stringify(error));
 
     return err(error);
   }
@@ -187,22 +194,13 @@ export async function DeletePengguna({ id }: DeletePenggunaProps) {
     });
     if (!data) return err(new Error("Tidak dapat menghapus pengguna !"));
 
-    await prisma.user.delete({
-      where: {
-        id,
-      },
-    });
-
-    await prisma.session.deleteMany({
-      where: {
-        userId: id,
-      },
-    });
-
-    await prisma.account.deleteMany({
-      where: {
-        userId: id,
-      },
+    await prisma.$transaction(async (tx) => {
+      // Delete User
+      await tx.user.delete({
+        where: {
+          id,
+        },
+      });
     });
 
     revalidatePath("/master-data/pengguna");

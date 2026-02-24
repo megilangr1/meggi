@@ -22,6 +22,15 @@ import Link from "next/link";
 
 export default async function DaftarPengguna() {
   const users = await prisma.user.findMany({
+    where: {
+      userRoles: {
+        none: {
+          role: {
+            name: "MEGGI",
+          },
+        },
+      },
+    },
     orderBy: {
       createdAt: "asc",
     },

@@ -93,8 +93,6 @@ const FormulirPengguna = ({
         }
       }
 
-      console.log(action);
-
       doAlert(1, action.message);
       router.push("/master-data/pengguna");
       return;
