@@ -16,17 +16,17 @@ import {
 } from "../validations/pengguna-schema";
 import { hashPassword } from "../core/auth/password";
 
-type FormInput = {
+interface FormInput {
   name: string;
   email: string;
   password?: string;
   password_confirmation?: string;
   roles: string[];
-};
+}
 
-type CreatePenggunaProps = {
+interface CreatePenggunaProps {
   data: FormInput;
-};
+}
 
 export async function CreatePengguna({ data }: CreatePenggunaProps) {
   try {
@@ -81,10 +81,10 @@ export async function CreatePengguna({ data }: CreatePenggunaProps) {
   }
 }
 
-type UpdatePenggunaProps = {
+interface UpdatePenggunaProps {
   id: string;
   data: FormInput;
-};
+}
 
 export async function UpdatePengguna({ id, data }: UpdatePenggunaProps) {
   try {
@@ -180,9 +180,9 @@ export async function UpdatePengguna({ id, data }: UpdatePenggunaProps) {
   }
 }
 
-type DeletePenggunaProps = {
+interface DeletePenggunaProps {
   id: string;
-};
+}
 
 export async function DeletePengguna({ id }: DeletePenggunaProps) {
   try {

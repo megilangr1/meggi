@@ -5,9 +5,9 @@ import { DeletePengguna } from "@/lib/actions/action-pengguna";
 import { useDialogStore } from "@/lib/stores/dialog-store";
 import { doAlert } from "../alert";
 
-type DeleteButtonProps = {
+interface DeleteButtonProps {
   id: string;
-};
+}
 
 const DeleteButton = ({ id }: DeleteButtonProps) => {
   const { openDialog } = useDialogStore();

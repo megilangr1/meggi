@@ -40,11 +40,11 @@ const defaultValues = {
   roles: [],
 };
 
-type FormulirPenggunaProps = {
+interface FormulirPenggunaProps {
   dataRoles: Role[];
   id?: string;
   editData?: UserWithRoles;
-};
+}
 
 const FormulirPengguna = ({
   dataRoles,
