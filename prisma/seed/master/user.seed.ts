@@ -73,5 +73,27 @@ export async function seedUser() {
     });
   }
 
+  for (let index = 0; index < 200; index++) {
+    const dummy = {
+      name: `Dummy - ${index}`,
+      email: `dummy${index}@mail.com`,
+      password: `test1234`,
+    };
+
+    const check = await db.user.findUnique({
+      where: { email: dummy.email },
+    });
+
+    if (!check) {
+      await auth.api.signUpEmail({
+        body: {
+          name: dummy.name,
+          email: dummy.email,
+          password: dummy.password,
+        },
+      });
+    }
+  }
+
   console.log("USER SEEDER COMPLETE !");
 }

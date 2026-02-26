@@ -2,9 +2,19 @@ import { AuthGuard } from "@/lib/core/auth/auth-guard";
 import PageHeader from "../../_components/page-header";
 import { Plus, Sheet } from "lucide-react";
 import DaftarPengguna from "./_components/daftar-pengguna";
+import {
+  extractSearchParams,
+  SearchParamsInterface,
+} from "@/lib/helpers/extract-search-params";
 
-export default async function Page() {
+interface PageProps {
+  searchParams?: Promise<SearchParamsInterface>;
+}
+
+export default async function Page({ searchParams }: PageProps) {
   await AuthGuard.pageGuard(["ADMIN"]);
+
+  const params = await extractSearchParams(searchParams);
 
   return (
     <div className="flex flex-col gap-2">
@@ -19,7 +29,7 @@ export default async function Page() {
         }}
       />
 
-      <DaftarPengguna />
+      <DaftarPengguna params={params} />
     </div>
   );
 }

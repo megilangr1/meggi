@@ -31,10 +31,9 @@ const MainDialog = () => {
         <AlertDialogHeader>
           <AlertDialogMedia
             className={cn(
-              type === "danger"
-                ? "bg-destructive/10 text-destructive dark:bg-destructive/20 dark:text-destructive"
-                : "",
-              isLoading ? "animate-pulse" : "",
+              type === "danger" &&
+                "bg-destructive/10 text-destructive dark:bg-destructive/20 dark:text-destructive",
+              isLoading && "animate-pulse",
             )}
           >
             <CircleQuestionMark />

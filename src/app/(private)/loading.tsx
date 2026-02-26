@@ -1,5 +1,5 @@
 import LoadingScreen from "@/components/helpers/loading/loading-screen";
 
 export default function Loading() {
-  return <LoadingScreen absolute={false} />;
+  return <LoadingScreen absolute={false} fullscreen={false} />;
 }

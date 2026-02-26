@@ -1,4 +1,6 @@
 import DeleteButton from "@/components/helpers/table/delete-button";
+import PaginationTable from "@/components/helpers/table/pagination-table";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -16,32 +18,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import prisma from "@/lib/core/prisma/prisma";
+import { IndexPengguna } from "@/lib/actions/action-pengguna";
+import { BasicParams } from "@/lib/helpers/extract-search-params";
+import { generateRowNumber } from "@/lib/helpers/main-helper";
 import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 
-export default async function DaftarPengguna() {
-  const users = await prisma.user.findMany({
-    where: {
-      userRoles: {
-        none: {
-          role: {
-            name: "MEGGI",
-          },
-        },
-      },
-    },
-    orderBy: {
-      createdAt: "asc",
-    },
-    include: {
-      userRoles: {
-        include: {
-          role: true,
-        },
-      },
-    },
-  });
+interface DaftarPenggunaProps {
+  params: BasicParams;
+}
+
+export default async function DaftarPengguna({ params }: DaftarPenggunaProps) {
+  const { users, total, limit, page } = await IndexPengguna(params);
 
   return (
     <div className="flex flex-col gap-2">
@@ -57,9 +45,11 @@ export default async function DaftarPengguna() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {users.map((v, k) => (
+            {users.map((v, index) => (
               <TableRow key={v.id}>
-                <TableCell>{k + 1}.</TableCell>
+                <TableCell>
+                  {generateRowNumber(params.page, params.limit, index)}.
+                </TableCell>
                 <TableCell>{v.name}</TableCell>
                 <TableCell>{v.email}</TableCell>
                 <TableCell>
@@ -91,6 +81,20 @@ export default async function DaftarPengguna() {
             ))}
           </TableBody>
         </Table>
+      </div>
+
+      <div className="w-full flex flex-col-reverse lg:flex-row items-center justify-center lg:justify-between gap-x-1 gap-y-3">
+        <div className="flex-auto flex items-center justify-start">
+          <Badge className="text-[10px] tracking-wider rounded-sm py-2 px-3">
+            Total {total.toLocaleString("id-ID")} Data
+          </Badge>
+        </div>
+        <div className="flex p-2 border rounded-sm max-w-full overflow-x-auto">
+          <PaginationTable
+            currentPage={page}
+            totalPage={Math.ceil(total / limit)}
+          />
+        </div>
       </div>
     </div>
   );

@@ -7,16 +7,19 @@ const LoadingScreen = ({
   topIndex = false,
   logo = false,
   className,
+  fullscreen = true,
 }: {
   absolute?: boolean;
   topIndex?: boolean;
   logo?: boolean;
   className?: string;
+  fullscreen?: boolean;
 }) => {
   return (
     <div
       className={cn(
-        "min-h-screen w-full flex flex-col items-center justify-center gap-3 bg-white",
+        "w-full flex flex-col items-center justify-center gap-3 bg-white",
+        !!fullscreen ? `min-h-screen` : `min-h-[60vh]`,
         !!absolute && `absolute top-0 right-0`,
         !!topIndex && "z-10",
         className,

@@ -15,6 +15,7 @@ import {
   penggunaFormEdit,
 } from "../validations/pengguna-schema";
 import { hashPassword } from "../core/auth/password";
+import { Prisma } from "@/generated/prisma/client";
 
 interface FormInput {
   name: string;
@@ -208,4 +209,67 @@ export async function DeletePengguna({ id }: DeletePenggunaProps) {
   } catch (error) {
     return err(error);
   }
+}
+
+// Index
+interface IndexPenggunaProps {
+  page: number;
+  limit: number;
+  search: string;
+  sortBy: string;
+  sortType: "asc" | "desc";
+}
+
+export async function IndexPengguna({
+  page,
+  limit,
+  search,
+  sortBy,
+  sortType,
+}: IndexPenggunaProps) {
+  // await new Promise((resolve) => setTimeout(resolve, 3000));
+
+  const skip = (page - 1) * limit;
+
+  const where: Prisma.UserWhereInput = {
+    AND: {
+      userRoles: {
+        none: {
+          role: {
+            name: "MEGGI",
+          },
+        },
+      },
+    },
+  };
+
+  if (search) {
+    where.OR = [
+      {
+        name: { contains: search },
+        email: { contains: search },
+      },
+    ];
+  }
+
+  const [users, total] = await Promise.all([
+    await prisma.user.findMany({
+      where,
+      skip,
+      take: limit,
+      orderBy: {
+        [sortBy]: sortType,
+      },
+      include: {
+        userRoles: {
+          include: {
+            role: true,
+          },
+        },
+      },
+    }),
+    await prisma.user.count({ where }),
+  ]);
+
+  return { users, total, skip, limit, page };
 }
