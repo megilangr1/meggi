@@ -6,6 +6,10 @@ import {
   extractSearchParams,
   SearchParamsInterface,
 } from "@/lib/helpers/extract-search-params";
+import FilterTable from "@/components/helpers/table/filter-table";
+import { Suspense } from "react";
+import TableSkeleton from "@/components/helpers/table/table-skeleton";
+import { sortFieldPengguna } from "@/lib/helpers/sort-field-master";
 
 interface PageProps {
   searchParams?: Promise<SearchParamsInterface>;
@@ -17,7 +21,7 @@ export default async function Page({ searchParams }: PageProps) {
   const params = await extractSearchParams(searchParams);
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-3">
       <PageHeader
         title="Data Pengguna"
         icon={Sheet}
@@ -29,7 +33,18 @@ export default async function Page({ searchParams }: PageProps) {
         }}
       />
 
-      <DaftarPengguna params={params} />
+      <FilterTable
+        sortBy={params.sortBy}
+        sortType={params.sortType}
+        sortField={sortFieldPengguna}
+      />
+
+      <Suspense
+        key={Object.values(params).join("")}
+        fallback={<TableSkeleton />}
+      >
+        <DaftarPengguna params={params} />
+      </Suspense>
     </div>
   );
 }

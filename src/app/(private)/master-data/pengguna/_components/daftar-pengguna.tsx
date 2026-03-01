@@ -14,13 +14,14 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
 import { IndexPengguna } from "@/lib/actions/action-pengguna";
 import { BasicParams } from "@/lib/helpers/extract-search-params";
-import { generateRowNumber } from "@/lib/helpers/main-helper";
+import { generateRowNumber } from "@/lib/helpers/client-main-helper";
 import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 
@@ -80,22 +81,28 @@ export default async function DaftarPengguna({ params }: DaftarPenggunaProps) {
               </TableRow>
             ))}
           </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TableCell
+                colSpan={5}
+                className="rounded-b-sm text-xs font-semibold tracking-widest"
+              >
+                <div className="flex items-center justify-end">
+                  <Badge className="text-[10px] rounded-sm">
+                    Total {total.toLocaleString("id-ID")} Data
+                  </Badge>
+                </div>
+              </TableCell>
+            </TableRow>
+          </TableFooter>
         </Table>
       </div>
 
-      <div className="w-full flex flex-col-reverse lg:flex-row items-center justify-center lg:justify-between gap-x-1 gap-y-3">
-        <div className="flex-auto flex items-center justify-start">
-          <Badge className="text-[10px] tracking-wider rounded-sm py-2 px-3">
-            Total {total.toLocaleString("id-ID")} Data
-          </Badge>
-        </div>
-        <div className="flex p-2 border rounded-sm max-w-full overflow-x-auto">
-          <PaginationTable
-            currentPage={page}
-            totalPage={Math.ceil(total / limit)}
-          />
-        </div>
-      </div>
+      <PaginationTable
+        currentPage={page}
+        totalPage={Math.ceil(total / limit)}
+        limit={limit}
+      />
     </div>
   );
 }

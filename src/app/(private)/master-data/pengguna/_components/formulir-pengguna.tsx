@@ -145,7 +145,7 @@ const FormulirPengguna = ({
                         placeholder="Masukan Nama Pengguna..."
                         autoComplete="off"
                         disabled={isLoading}
-                        // required
+                        required
                       />
                       {fieldState.invalid && (
                         <FieldError errors={[fieldState.error]} />
@@ -173,7 +173,7 @@ const FormulirPengguna = ({
                         placeholder="Masukan Email Pengguna..."
                         autoComplete="off"
                         disabled={isLoading}
-                        // required
+                        required
                       />
                       {fieldState.invalid && (
                         <FieldError errors={[fieldState.error]} />

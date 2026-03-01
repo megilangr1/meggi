@@ -16,6 +16,7 @@ import {
 } from "../validations/pengguna-schema";
 import { hashPassword } from "../core/auth/password";
 import { Prisma } from "@/generated/prisma/client";
+import { sortFieldPengguna } from "../helpers/sort-field-master";
 
 interface FormInput {
   name: string;
@@ -227,9 +228,14 @@ export async function IndexPengguna({
   sortBy,
   sortType,
 }: IndexPenggunaProps) {
-  // await new Promise((resolve) => setTimeout(resolve, 3000));
-
   const skip = (page - 1) * limit;
+
+  const sortField = sortFieldPengguna.some((v) => v.field == sortBy)
+    ? sortBy
+    : "createdAt";
+  const sortOrder = ["asc", "desc"].includes(sortType.toLocaleLowerCase())
+    ? sortType.toLocaleLowerCase()
+    : "desc";
 
   const where: Prisma.UserWhereInput = {
     AND: {
@@ -245,10 +251,8 @@ export async function IndexPengguna({
 
   if (search) {
     where.OR = [
-      {
-        name: { contains: search },
-        email: { contains: search },
-      },
+      { name: { contains: search } },
+      { email: { contains: search } },
     ];
   }
 
@@ -258,7 +262,7 @@ export async function IndexPengguna({
       skip,
       take: limit,
       orderBy: {
-        [sortBy]: sortType,
+        [sortField]: sortOrder,
       },
       include: {
         userRoles: {
@@ -271,5 +275,5 @@ export async function IndexPengguna({
     await prisma.user.count({ where }),
   ]);
 
-  return { users, total, skip, limit, page };
+  return { users, total, skip, limit, page, sortBy, sortType };
 }
